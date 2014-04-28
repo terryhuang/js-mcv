@@ -1,0 +1,82 @@
+<!-- targets :: Determine nodejs to use -->
+<target name="nodejsver" >
+	<property environment="env"/>
+	
+	<if>
+		<os family="unix"/>
+		<then>
+			<exec executable="ksh" outputproperty="architecture">
+				<arg value="-c"/>
+				<arg value="uname -m"/>
+			</exec>
+		</then>
+		<else>
+			<property name="architecture" value="${os.arch}"/>
+		</else>
+	</if>
+	<echo>OS Architecture....${architecture}</echo>
+	
+	<!-- use locally installeed node if found -->
+	<condition property="node.exe" value="node">
+		<available file="node" filepath="${env.PATH}" />
+	</condition>
+	<condition property="node.exe" value="${build-tools-dir}/nodejs/node32.exe">
+		<and>
+			<os family="windows"/>
+			<equals arg1="${architecture}" arg2="x86"/>
+		</and>
+	</condition>
+	<condition property="node.exe" value="${build-tools-dir}/nodejs/node64.exe">
+		<and>
+			<os family="windows"/>
+			<or>
+				<equals arg1="${architecture}" arg2="x86_64"/>
+				<equals arg1="${architecture}" arg2="amd64"/>
+			</or>
+		</and>
+	</condition>
+	<condition property="node.exe" value="${build-tools-dir}/nodejs/node-v0.8.17-darwin-x86/bin/node">
+		<and>
+			<os family="mac"/>
+			<equals arg1="${architecture}" arg2="x86"/>
+		</and>
+	</condition>
+	<condition property="node.exe" value="${build-tools-dir}/nodejs/node-v0.8.17-darwin-x64/bin/node">
+		<and>
+			<os family="mac"/>
+			<equals arg1="${architecture}" arg2="x86_64"/>
+		</and>
+	</condition>
+	<condition property="node.exe" value="${build-tools-dir}/nodejs/node-v0.8.17-sunos-x86/bin/node">
+		<and>
+			<os name="SunOS" arch="sparc"/>
+			<equals arg1="${architecture}" arg2="x86"/>
+		</and>
+	</condition>
+	<condition property="node.exe" value="${build-tools-dir}/nodejs/node-v0.8.17-sunos-x64/bin/node">
+		<and>
+			<os name="SunOS" arch="sparc"/>
+			<or>
+				<equals arg1="${architecture}" arg2="x86_64"/>
+				<equals arg1="${architecture}" arg2="amd64"/>
+			</or>
+		</and>
+	</condition>
+	<condition property="node.exe" value="${build-tools-dir}/nodejs/node-v0.8.17-linux-x86/bin/node">
+		<and>
+			<os family="unix"/>
+			<equals arg1="${architecture}" arg2="x86"/>
+		</and>
+	</condition>
+	<condition property="node.exe" value="${build-tools-dir}/nodejs/node-v0.8.17-linux-x64/bin/node">
+		<and>
+			<os family="unix"/>
+			<or>
+				<equals arg1="${architecture}" arg2="x86_64"/>
+				<equals arg1="${architecture}" arg2="amd64"/>
+			</or>
+		</and>
+	</condition>
+	
+	<echo message="nodejs found at: ${node.exe}" />
+</target>
