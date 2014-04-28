@@ -1,0 +1,81 @@
+<!-- targets :: Determine phantomjs to use -->
+<target name="phantomjsver" >
+	<property environment="env"/>
+	<if>
+		<os family="unix"/>
+		<then>
+			<exec executable="ksh" outputproperty="architecture">
+				<arg value="-c"/>
+				<arg value="uname -m"/>
+			</exec>
+		</then>
+		<else>
+			<property name="architecture" value="${os.arch}"/>
+		</else>
+	</if>
+	<echo>OS Architecture....${architecture}</echo>
+	
+	<!-- use locally installeed phantomjs if found -->
+	<condition property="phantomjs.exe" value="phantomjs">
+		<available file="phantomjs" filepath="${env.PATH}" />
+	</condition>
+	<condition property="phantomjs.exe" value="${build-tools-dir}/phantomjs/phantomjs-1.9.2-windows/phantomjs.exe">
+		<and>
+			<os family="windows"/>
+			<equals arg1="${architecture}" arg2="x86"/>
+		</and>
+	</condition>
+	<condition property="phantomjs.exe" value="${build-tools-dir}/phantomjs/phantomjs-1.9.2-windows/phantomjs.exe">
+		<and>
+			<os family="windows"/>
+			<or>
+				<equals arg1="${architecture}" arg2="x86_64"/>
+				<equals arg1="${architecture}" arg2="amd64"/>
+			</or>
+		</and>
+	</condition>
+	<condition property="phantomjs.exe" value="${build-tools-dir}/phantomjs/phantomjs-1.9.2-macosx/phantomjs">
+		<and>
+			<os family="mac"/>
+			<equals arg1="${architecture}" arg2="x86"/>
+		</and>
+	</condition>
+	<condition property="phantomjs.exe" value="${build-tools-dir}/phantomjs/phantomjs-1.9.2-macosx/phantomjs">
+		<and>
+			<os family="mac"/>
+			<equals arg1="${architecture}" arg2="x86_64"/>
+		</and>
+	</condition>
+	<condition property="phantomjs.exe" value="${build-tools-dir}/phantomjs/phantomjs-1.9.2-linux-i686/phantomjs">
+		<and>
+			<os name="SunOS" arch="sparc"/>
+			<equals arg1="${architecture}" arg2="x86"/>
+		</and>
+	</condition>
+	<condition property="phantomjs.exe" value="${build-tools-dir}/phantomjs/phantomjs-1.9.2-linux-x86_64/phantomjs">
+		<and>
+			<os name="SunOS" arch="sparc"/>
+			<or>
+				<equals arg1="${architecture}" arg2="x86_64"/>
+				<equals arg1="${architecture}" arg2="amd64"/>
+			</or>
+		</and>
+	</condition>
+	<condition property="phantomjs.exe" value="${build-tools-dir}/phantomjs/phantomjs-1.9.2-linux-i686/phantomjs">
+		<and>
+			<os family="unix"/>
+			<equals arg1="${architecture}" arg2="x86"/>
+		</and>
+	</condition>
+	<condition property="phantomjs.exe" value="${build-tools-dir}/phantomjs/phantomjs-1.9.2-linux-x86_64/phantomjs">
+		<and>
+			<os family="unix"/>
+			<or>
+				<equals arg1="${architecture}" arg2="x86_64"/>
+				<equals arg1="${architecture}" arg2="amd64"/>
+			</or>
+		</and>
+	</condition>
+	
+	<echo message="phantomjs found at: ${phantomjs.exe}" />
+</target>
